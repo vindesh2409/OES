@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>My Results</h2>
+        <ul id="resultList"></ul>
+    </div>
+    <script>
+        const API = "http://localhost:3000";
+        const studentId = localStorage.getItem("studentId");
+
+        fetch(`${API}/exam/results/${studentId}`)
+        .then(res => res.json())
+        .then(data => {
+            const ul = document.getElementById("resultList");
+            data.forEach(r => {
+                ul.innerHTML += `<li>Exam ID: ${r.examId} | Score: ${r.score}</li>`;
+            });
+        });
+    </script>
+</body>
+</html>
