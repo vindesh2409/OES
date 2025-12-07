@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Available Exams</h2>
+        <ul id="examList"></ul>
+    </div>
+    <script>
+        const API = "http://localhost:3000";
+        const studentId = localStorage.getItem("studentId");
+
+        fetch(`${API}/student/exams`)
+        .then(res => res.json())
+        .then(data => {
+            const ul = document.getElementById("examList");
+            data.forEach(exam => {
+                const li = document.createElement("li");
+                li.innerHTML = `${exam.subject} <button onclick="startExam(${exam.id})">Start</button>`;
+                ul.appendChild(li);
+            });
+        });
+
+        function startExam(examId){
+            localStorage.setItem("examId", examId);
+            window.location = "exam.html";
+        }
+    </script>
+</body>
+</html>
+
