@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2 id="examTitle"></h2>
+        <div id="questionsContainer"></div>
+        <div>Time left: <span id="timer">60</span> sec</div>
+        <button onclick="submitExam()">Submit</button>
+    </div>
+
+    <script>
+        const API = "http://localhost:3000";
+        const studentId = localStorage.getItem("studentId");
+        const examId = localStorage.getItem("examId");
+        let examData;
+        let answers = {};
+
+        fetch(`${API}/student/exams`)
+        .then(res => res.json())
+        .then(data => {
+            examData = data.find(e => e.id == examId);
+            document.getElementById("examTitle").innerText = examData.subject;
+
+            const container = document.getElementById("questionsContainer");
+            examData.questions.forEach((q, index) => {
+                const div = document.createElement("div");
+                div.innerHTML = `<p>${index+1}. ${q.q}</p>`;
+                q.options.forEach(opt => {
+                    div.innerHTML += `<label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label><br>`;
+                });
+                container.appendChild(div);
+            });
+        });
+
+        let time = 60;
+        const timerEl = document.getElementById("timer");
+        const timerInterval = setInterval(() => {
+            time--;
+            timerEl.innerText = time;
+            if(time <= 0){
+                clearInterval(timerInterval);
+                submitExam();
+            }
+        }, 1000);
+
+        function submitExam(){
+            clearInterval(timerInterval);
+            const qCount = examData.questions.length;
+            let score = 0;
+            for(let i=0; i<qCount; i++){
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if(selected && selected.value === examData.questions[i].answer){
+                    score++;
+                }
+            }
+            fetch(`${API}/exam/submit`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ studentId, examId, score })
+            }).then(res => res.json())
+            .then(data => {
+                alert("Exam submitted! Your score: " + score);
+                window.location = "result.html";
+            });
+        }
+    </script>
+</body>
+</html>
