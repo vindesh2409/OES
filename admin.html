@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Login</h2>
+        <input type="text" id="adminUsername" placeholder="Username">
+        <input type="password" id="adminPassword" placeholder="Password">
+        <button onclick="adminLogin()">Login</button>
+
+        <div id="adminPanel" style="display:none;">
+            <h2>Add Exam</h2>
+            <input type="text" id="examSubject" placeholder="Subject">
+            <textarea id="examQuestions" placeholder='Questions JSON (e.g. [{"q":"2+2=?","options":["2","3","4","5"],"answer":"4"}])'></textarea>
+            <button onclick="addExam()">Add Exam</button>
+            <h3>Existing Exams</h3>
+            <ul id="examList"></ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
